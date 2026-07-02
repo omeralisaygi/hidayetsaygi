@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ ayarlar.get('baslik', 'Hidayet Saygı Ahşap') }}</title>
+    <!-- Tasarım Garantisi: CSS dosyaları doğrudan yükleniyor -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Hidayet Saygı</title>
+    <style>
+        .hero { background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url('{{ ayarlar.get("kapak_url", "") }}'); background-size: cover; padding: 100px 20px; text-align: center; color: white; }
+        .wa-btn { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; z-index: 9999; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .card-img-top { height: 200px; object-fit: cover; }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark sticky-top">
-        <div class="container"><a class="navbar-brand">Hidayet Saygı Ahşap</a></div>
-    </nav>
-    
-    <div class="container mt-5">
-        <h2 id="hakkimizda">Hakkımızda</h2>
-        <p>{{ ayarlar.get('hakkimizda', 'Buraya açıklama gelecek.') }}</p>
-        
-        <h2 id="urunler" class="mt-5">Ürünlerimiz</h2>
-        <div class="row">
+    <nav class="navbar navbar-dark bg-dark sticky-top"><div class="container"><span class="navbar-brand">{{ ayarlar.get('baslik', 'Hidayet Saygı') }}</span></div></nav>
+    <header class="hero">
+        <h1>{{ ayarlar.get('baslik', 'Hidayet Saygı') }}</h1>
+        <p>{{ ayarlar.get('alt_baslik', 'Endüstriyel Çözüm Ortağınız') }}</p>
+    </header>
+    <main class="container py-5">
+        <h3 class="mb-4">Ürünlerimiz</h3>
+        <div class="row g-4">
             {% for u in urunler %}
-            <div class="col-md-4"><div class="card"><img src="{{ u[3] }}" class="card-img-top"><div class="card-body"><h5>{{ u[1] }}</h5></div></div></div>
+            <div class="col-md-4"><div class="card h-100 shadow-sm"><img src="{{ u[3] }}" class="card-img-top"><div class="card-body"><h5>{{ u[1] }}</h5><p>{{ u[2] }}</p></div></div></div>
             {% endfor %}
         </div>
-    </div>
-    
-    <a href="https://wa.me/{{ ayarlar.get('whatsapp', '905000000000') }}" 
-       style="position:fixed; bottom:20px; right:20px; background:#25D366; color:white; padding:15px; border-radius:50px; text-decoration:none;">WhatsApp</a>
+    </main>
+    <a href="https://wa.me/{{ ayarlar.get('whatsapp_no', '905000000000') }}" class="wa-btn">WhatsApp İletişim</a>
 </body>
 </html>
