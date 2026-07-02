@@ -3,29 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ ayarlar.get('baslik', 'Hidayet Saygı Ahşap') }}</title>
-    <!-- Tasarım Garantisi: CSS dosyaları doğrudan yükleniyor -->
+    <title>{{ ayarlar.get('baslik', 'Hidayet Saygı') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .hero { background: linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)), url('{{ ayarlar.get("kapak_url", "") }}'); background-size: cover; padding: 100px 20px; text-align: center; color: white; }
-        .wa-btn { position: fixed; bottom: 20px; right: 20px; background: #25d366; color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; z-index: 9999; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .card-img-top { height: 200px; object-fit: cover; }
+        .hero { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('{{ ayarlar.get("kapak_url", "") }}'); background-size: cover; background-position: center; height: 70vh; display: flex; align-items: center; justify-content: center; color: white; text-align: center; }
+        .product-card { transition: 0.3s; border-radius: 15px; overflow: hidden; }
+        .product-card:hover { transform: translateY(-10px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .whatsapp-float { position: fixed; bottom: 30px; right: 30px; background: #25d366; color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; text-decoration: none; z-index: 1000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-dark sticky-top"><div class="container"><span class="navbar-brand">{{ ayarlar.get('baslik', 'Hidayet Saygı') }}</span></div></nav>
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">{{ ayarlar.get('baslik', 'Hidayet Saygı') }}</a>
+        </div>
+    </nav>
+
     <header class="hero">
-        <h1>{{ ayarlar.get('baslik', 'Hidayet Saygı') }}</h1>
-        <p>{{ ayarlar.get('alt_baslik', 'Endüstriyel Çözüm Ortağınız') }}</p>
+        <div class="container">
+            <h1 class="display-3 fw-bold">{{ ayarlar.get('baslik', 'Hidayet Saygı') }}</h1>
+            <p class="lead fs-2">{{ ayarlar.get('alt_baslik', 'Endüstriyel Çözüm Ortağınız') }}</p>
+        </div>
     </header>
-    <main class="container py-5">
-        <h3 class="mb-4">Ürünlerimiz</h3>
+
+    <section class="container py-5">
+        <h2 class="text-center mb-4 fw-bold">Hakkımızda</h2>
+        <div class="card p-4 shadow-sm">
+            <p class="fs-5">{{ ayarlar.get('hakkimizda', 'Buraya hakkımızda metni eklenecektir.') }}</p>
+        </div>
+    </section>
+
+    <section class="container py-5 bg-light rounded">
+        <h2 class="text-center mb-5 fw-bold">Ürünlerimiz</h2>
         <div class="row g-4">
             {% for u in urunler %}
-            <div class="col-md-4"><div class="card h-100 shadow-sm"><img src="{{ u[3] }}" class="card-img-top"><div class="card-body"><h5>{{ u[1] }}</h5><p>{{ u[2] }}</p></div></div></div>
+            <div class="col-md-4">
+                <div class="card product-card h-100">
+                    <img src="{{ u[3] }}" class="card-img-top" alt="{{ u[1] }}" style="height: 250px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">{{ u[1] }}</h5>
+                        <p class="card-text text-muted">{{ u[2] }}</p>
+                    </div>
+                </div>
+            </div>
             {% endfor %}
         </div>
-    </main>
-    <a href="https://wa.me/{{ ayarlar.get('whatsapp_no', '905000000000') }}" class="wa-btn">WhatsApp İletişim</a>
+    </section>
+
+    <a href="https://wa.me/{{ ayarlar.get('whatsapp_no', '905000000000') }}" class="whatsapp-float">
+        <i class="fab fa-whatsapp fs-4 me-2"></i>Teklif Al
+    </a>
+
+    <footer class="bg-dark text-white text-center py-4 mt-5">
+        <p>&copy; 2026 Hidayet Saygı - Tüm Hakları Saklıdır.</p>
+    </footer>
+
 </body>
 </html>
