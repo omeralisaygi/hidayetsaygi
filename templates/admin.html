@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Yönetim Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><span class="text-primary">Hidayet Saygı</span> Profesyonel Yönetim Paneli</h2>
+            <a href="/logout" class="btn btn-danger btn-sm">Güvenli Çıkış</a>
+        </div>
+        
+        <div class="row">
+            <!-- Genel Ayarlar -->
+            <div class="col-md-6 mb-4">
+                <div class="card shadow-sm p-4">
+                    <h4 class="mb-3 text-secondary">Genel Site Bilgileri</h4>
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label class="form-label">Şirket/Site Başlığı</label>
+                            <input type="text" name="baslik" class="form-content form-control" value="{{ veri.baslik }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Slogan / Alt Başlık</label>
+                            <input type="text" name="alt_baslik" class="form-control" value="{{ veri.alt_baslik }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Şirket Logosu (Görsel Seçin)</label>
+                            <input type="file" class="form-control mb-1" onchange="resimYukle(this, 'logo_kutusu')">
+                            <input type="text" name="logo_url" id="logo_kutusu" class="form-control bg-light" value="{{ veri.logo_url }}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Büyük Giriş Fotoğrafı (Kapak)</label>
+                            <input type="file" class="form-control mb-1" onchange="resimYukle(this, 'kapak_kutusu')">
+                            <input type="text" name="kapak_url" id="kapak_kutusu" class="form-control bg-light" value="{{ veri.kapak_url }}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Kısa Açıklama Metni</label>
+                            <textarea name="aciklama" class="form-control" rows="2">{{ veri.aciklama }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hakkımızda Detaylı Yazısı</label>
+                            <textarea name="hakkimizda_metni" class="form-control" rows="4">{{ veri.hakkimizda_metni }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">WhatsApp Telefon Numarası (Örn: 90532...)</label>
+                            <input type="text" name="whatsapp_no" class="form-control" value="{{ veri.whatsapp_no }}">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Fabrika / Ofis Adresi</label>
+                            <input type="text" name="adres" class="form-control" value="{{ veri.adres }}">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Tüm Ayarları Kaydet</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Ürün Yönetimi -->
+            <div class="col-md-6">
+                <div class="card shadow-sm p-4 mb-4">
+                    <h4 class="mb-3 text-secondary">Yeni Ürün / Hizmet Ekle</h4>
+                    <form method="POST">
+                        <input type="hidden" name="islem" value="urun_ekle">
+                        <div class="mb-3">
+                            <label class="form-label">Ürün Adı (Örn: Euro Palet 120x80)</label>
+                            <input type="text" name="yeni_urun_adi" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ürün Açıklaması / Detayları</label>
+                            <textarea name="yeni_urun_detay" class="form-control" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Ürün Görseli Seç</label>
+                            <input type="file" class="form-control mb-1" onchange="resimYukle(this, 'urun_kutusu')">
+                            <input type="text" name="yeni_urun_gorsel" id="urun_kutusu" class="form-control bg-light" placeholder="Resim yüklediğinizde link buraya gelecektir." readonly>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Ürünü Kataloğa Ekle</button>
+                    </form>
+                </div>
+
+                <!-- Mevcut Ürünler Listesi -->
+                <div class="card shadow-sm p-4">
+                    <h4 class="mb-3 text-secondary">Mevcut Ürünleriniz</h4>
+                    <ul class="list-group">
+                        {% for urun in veri.urunler_listesi %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="{{ urun[3] }}" style="width: 45px; height: 45px; object-fit: cover;" class="me-2 rounded">
+                                <div>
+                                    <strong>{{ urun[1] }}</strong>
+                                </div>
+                            </div>
+                            <form method="POST" onsubmit="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
+                                <input type="hidden" name="islem" value="urun_sil">
+                                <input type="hidden" name="urun_id" value="{{ urun[0] }}">
+                                <button type="submit" class="btn btn-sm btn-danger">Sil</button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÜCRETSİZ RESİM YÜKLEME VE LİNK OLUŞTURMA ALTYAPISI (BULUT MOTORU) -->
+    <script>
+        function resimYukle(inputElement, hedefKutuId) {
+            const file = inputElement.files[0];
+            if (!file) return;
+
+            const hedefKutu = document.getElementById(hedefKutuId);
+            hedefKutu.value = "Resim buluta yükleniyor, lütfen bekleyin...";
+
+            const formData = new FormData();
+            formData.append("image", file);
+
+            // Sınırsız ve ücretsiz imgb bulut servisi entegrasyonu
+            fetch("https://api.imgbb.com/1/upload?key=6701fccbd3e00be64303d3ee3dd8f78d", {
+                method: "POST",
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    hedefKutu.value = data.data.url;
+                } else {
+                    alert("Resim yüklenemedi, lütfen tekrar deneyin.");
+                    hedefKutu.value = "";
+                }
+            })
+            .catch(err => {
+                alert("Sistem hatası oluştu.");
+                hedefKutu.value = "";
+            });
+        }
+    </script>
+</body>
+</html>
