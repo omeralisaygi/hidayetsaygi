@@ -2,134 +2,92 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Yönetim Paneli</title>
+    <title>Profesyonel Yönetim Paneli</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .preview-img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
+    </style>
 </head>
 <body class="bg-light">
     <div class="container py-5">
         <div class="card shadow-sm p-4 mb-4 bg-white d-flex flex-row justify-content-between align-items-center">
-            <h2 class="mb-0"><span class="text-primary fw-bold">Hidayet Saygı</span> Profesyonel Yönetim Paneli</h2>
+            <h2 class="mb-0"><span class="text-primary fw-bold">Yönetim</span> Paneli</h2>
             <a href="/logout" class="btn btn-danger px-4">Güvenli Çıkış</a>
         </div>
         
         <div class="row">
+            <!-- Genel Ayarlar -->
             <div class="col-md-6 mb-4">
                 <div class="card shadow-sm p-4 bg-white h-100">
-                    <h4 class="mb-4 text-secondary fw-bold border-bottom pb-2">Genel Site Bilgileri</h4>
+                    <h4 class="mb-4 fw-bold">Site Bilgileri</h4>
                     <form method="POST">
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Şirket/Site Başlığı</label>
-                            <input type="text" name="baslik" class="form-control" value="{{ veri.baslik }}">
+                            <label class="form-label">Site Başlığı</label>
+                            <input type="text" name="baslik" class="form-control" value="{{ ayarlar.get('baslik', '') }}">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Slogan / Alt Başlık</label>
-                            <input type="text" name="alt_baslik" class="form-control" value="{{ veri.alt_baslik }}">
+                            <label class="form-label">Logo Linki</label>
+                            <input type="file" class="form-control mb-1" onchange="upload(this, 'logo_url')">
+                            <input type="text" name="logo_url" id="logo_url" class="form-control" value="{{ ayarlar.get('logo_url', '') }}">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Şirket Logosu (Fotoğraf Seçin)</label>
-                            <input type="file" class="form-control mb-1" onchange="resimYukle(this, 'logo_kutusu')">
-                            <input type="text" name="logo_url" id="logo_kutusu" class="form-control bg-light" value="{{ veri.logo_url }}" readonly>
+                            <label class="form-label">Kapak Resmi</label>
+                            <input type="file" class="form-control mb-1" onchange="upload(this, 'kapak_url')">
+                            <input type="text" name="kapak_url" id="kapak_url" class="form-control" value="{{ ayarlar.get('kapak_url', '') }}">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Büyük Giriş Fotoğrafı (Kapak)</label>
-                            <input type="file" class="form-control mb-1" onchange="resimYukle(this, 'kapak_kutusu')">
-                            <input type="text" name="kapak_url" id="kapak_kutusu" class="form-control bg-light" value="{{ veri.kapak_url }}" readonly>
+                            <label class="form-label">WhatsApp No (Örn: 905xxxxxxxxx)</label>
+                            <input type="text" name="whatsapp_no" class="form-control" value="{{ ayarlar.get('whatsapp_no', '') }}">
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Kısa Açıklama Metni</label>
-                            <textarea name="aciklama" class="form-control" rows="2">{{ veri.aciklama }}</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Hakkımızda Detaylı Yazısı</label>
-                            <textarea name="hakkimizda_metni" class="form-control" rows="4">{{ veri.hakkimizda_metni }}</textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">WhatsApp No (Örn: 90532...)</label>
-                            <input type="text" name="whatsapp_no" class="form-control" value="{{ veri.whatsapp_no }}">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Fabrika / Ofis Adresi</label>
-                            <input type="text" name="adres" class="form-control" value="{{ veri.adres }}">
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold mt-3">Tüm Ayarları Kaydet</button>
+                        <button type="submit" class="btn btn-primary w-100">Ayarları Kaydet</button>
                     </form>
                 </div>
             </div>
 
+            <!-- Ürün Yönetimi -->
             <div class="col-md-6">
                 <div class="card shadow-sm p-4 bg-white mb-4">
-                    <h4 class="mb-4 text-secondary fw-bold border-bottom pb-2">Yeni Ürün / Hizmet Ekle</h4>
+                    <h4 class="mb-4 fw-bold">Yeni Ürün Ekle</h4>
                     <form method="POST">
                         <input type="hidden" name="islem" value="urun_ekle">
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Ürün Adı (Örn: Euro Palet 120x80)</label>
-                            <input type="text" name="yeni_urun_adi" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Ürün Açıklaması / Detayları</label>
-                            <textarea name="yeni_urun_detay" class="form-control" rows="2" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Ürün Görseli Seç</label>
-                            <input type="file" class="form-control mb-1" onchange="resimYukle(this, 'urun_kutusu')">
-                            <input type="text" name="yeni_urun_gorsel" id="urun_kutusu" class="form-control bg-light" placeholder="Resim yüklediğinizde link buraya otomatik gelecektir." readonly>
-                        </div>
-                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Ürünü Kataloğa Ekle</button>
+                        <input type="text" name="urun_adi" class="form-control mb-2" placeholder="Ürün Adı" required>
+                        <textarea name="urun_detay" class="form-control mb-2" placeholder="Detaylar"></textarea>
+                        <input type="file" class="form-control mb-2" onchange="upload(this, 'urun_gorsel')">
+                        <input type="text" name="urun_gorsel" id="urun_gorsel" class="form-control mb-2" placeholder="Resim Linki">
+                        <button type="submit" class="btn btn-success w-100">Ürünü Ekle</button>
                     </form>
-                </div>
-
-                <div class="card shadow-sm p-4 bg-white">
-                    <h4 class="mb-4 text-secondary fw-bold border-bottom pb-2">Mevcut Ürünleriniz</h4>
-                    <div class="list-group">
-                        {% for urun in veri.urunler_listesi %}
-                        <div class="list-group-item d-flex justify-content-between align-items-center py-3">
-                            <div class="d-flex align-items-center">
-                                <img src="{{ urun[3] }}" style="width: 55px; height: 55px; object-fit: cover;" class="me-3 rounded shadow-sm">
-                                <div>
-                                    <h6 class="mb-0 fw-bold text-dark">{{ urun[1] }}</h6>
-                                </div>
-                            </div>
-                            <form method="POST" onsubmit="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
-                                <input type="hidden" name="islem" value="urun_sil">
-                                <input type="hidden" name="urun_id" value="{{ urun[0] }}">
-                                <button type="submit" class="btn btn-sm btn-danger px-3">Sil</button>
-                            </form>
-                        </div>
-                        {% endfor %}
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Güçlü Resim Yükleme Motoru -->
     <script>
-        function resimYukle(inputElement, hedefKutuId) {
-            const file = inputElement.files[0];
+        async function upload(input, targetId) {
+            const file = input.files[0];
             if (!file) return;
-
-            const hedefKutu = document.getElementById(hedefKutuId);
-            hedefKutu.value = "Resim buluta yükleniyor, lütfen bekleyin...";
-
+            const target = document.getElementById(targetId);
+            target.value = "Yükleniyor...";
+            
             const formData = new FormData();
             formData.append("image", file);
-
-            fetch("https://api.imgbb.com/1/upload?key=6701fccbd3e00be64303d3ee3dd8f78d", {
-                method: "POST",
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
+            
+            try {
+                const response = await fetch("https://api.imgbb.com/1/upload?key=6701fccbd3e00be64303d3ee3dd8f78d", {
+                    method: "POST",
+                    body: formData
+                });
+                const data = await response.json();
                 if(data.success) {
-                    hedefKutu.value = data.data.url;
+                    target.value = data.data.url;
                 } else {
-                    alert("Resim yüklenemedi, lütfen tekrar deneyin.");
-                    hedefKutu.value = "";
+                    alert("Resim yüklenemedi!");
+                    target.value = "";
                 }
-            })
-            .catch(err => {
-                alert("Sistem hatası oluştu.");
-                hedefKutu.value = "";
-            });
+            } catch (err) {
+                alert("Sistem hatası: " + err);
+                target.value = "";
+            }
         }
     </script>
 </body>
